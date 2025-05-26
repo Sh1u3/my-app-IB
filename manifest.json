@@ -1,0 +1,21 @@
+{
+  "name": "حصر المحلات التجارية في محافظة الظاهرة",
+  "short_name": "حصر المحلات",
+  "start_url": "login.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

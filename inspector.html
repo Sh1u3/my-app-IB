@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"> 
+<head> 
+<link rel="manifest" href="manifest.json">  
+<meta charset="UTF-8" />
+<title>حصر المحلات التجارية في محافظة الظاهرة</title>
+<style>
+  body {
+    font-family: 'Tahoma', sans-serif;
+    background: linear-gradient(to bottom, #E0F7FA, #B3E5FC);
+    padding: 2em;
+    direction: rtl;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  img {
+    width: 180px;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    color: #007BFF;
+    margin-bottom: 1rem;
+    font-family: 'Cairo', sans-serif;
+  }
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 600px;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  input, textarea {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    flex: 1 1 48%;
+    min-width: 140px;
+  }
+  textarea {
+    flex-basis: 100%;
+    min-height: 70px;
+    resize: vertical;
+  }
+  /* تعديل الأزرار الرئيسية */
+  button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    width: auto;
+    max-width: 200px;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 1rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 0.4em 0.6em;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  th {
+    background-color: #f0f8ff;
+    color: #003366;
+    font-family: 'Cairo', sans-serif;
+  }
+  /* تعديل أزرار التعديل والحذف داخل الجدول */
+  td button {
+    border: none;
+    color: white;
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: background-color 0.3s ease;
+  }
+  td .delete-btn {
+    background-color: #dc3545;
+  }
+  td .delete-btn:hover {
+    background-color: #a71d2a;
+  }
+  td .edit-btn {
+    background-color: #28a745;
+  }
+  td .edit-btn:hover {
+    background-color: #19692c;
+  }
+  .download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1rem;
+    max-width: 1000px;
+    width: 100%;
+    justify-content: center;
+  }
+  .download-buttons button {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 5px;
+    width: auto;
+    max-width: 140px;
+  }
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 1000px;
+  }
+  .action-buttons button {
+    background-color: #555;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.35rem 0.9rem;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    min-width: 120px;
+    width: auto;
+  }
+  .action-buttons button:hover {
+    background-color: #222;
+  }
+</style>
+</head>
+<body>
+
+<img src="logo.png" alt="شعار الهيئة" />
+<h2>حصر المحلات التجارية في محافظة الظاهرة</h2>
+
+<form id="inspectionForm">
+  <input type="text" id="shopName" placeholder="اسم المحل" required />
+  <input type="text" id="sectorType" placeholder="نوع القطاع" required />
+  <input type="text" id="activityName" placeholder="اسم النشاط" required />
+  <input type="text" id="location" placeholder="موقع المحل" required />
+  <input type="text" id="license" placeholder="رقم السجل التجاري" />
+  <input type="text" id="phone" placeholder="رقم الهاتف" />
+  <input type="text" id="visitor" placeholder="اسم القائم بالزيارة" />
+  <input type="date" id="visitDate" placeholder="تاريخ الزيارة" />
+  <input type="text" id="purpose" placeholder="الهدف من الزيارة" />
+  <textarea id="notes" placeholder="ملاحظات"></textarea>
+  <button type="submit" id="submitBtn">إضافة</button>
+</form>
+
+<div class="download-buttons">
+  <button onclick="exportToPDF()">تحميل PDF</button>
+  <button onclick="exportToExcel()">تحميل Excel</button>
+  <button onclick="downloadJSON()">تحميل JSON</button>
+  <button onclick="uploadJSON()">رفع JSON</button>
+  <button onclick="shareViaOutlook()">مشاركة Outlook</button>
+  <input type="file" id="jsonFile" style="display:none" accept=".json" onchange="handleJSONUpload(event)" />
+</div>
+
+<table id="dataTable" dir="rtl">
+  <thead>
+    <tr>
+      <th>اسم المحل</th>
+      <th>نوع القطاع</th>
+      <th>اسم النشاط</th>
+      <th>موقع المحل</th>
+      <th>رقم السجل التجاري</th>
+      <th>رقم الهاتف</th>
+      <th>اسم القائم بالزيارة</th>
+      <th>تاريخ الزيارة</th>
+      <th>الهدف من الزيارة</th>
+      <th>ملاحظات</th>
+      <th>تعديل</th>
+      <th>حذف</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div class="action-buttons">
+  <button onclick="window.location.href='login.html'">العودة إلى الصفحة الرئيسية</button>
+</div>
+
+<!-- المكتبات -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- JavaScript هنا -->
+<script>
+  let editIndex = -1;
+
+  document.getElementById("inspectionForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const shopName = document.getElementById("shopName").value.trim();
+    const sectorType = document.getElementById("sectorType").value;
+    const activityName = document.getElementById("activityName").value;
+    const location = document.getElementById("location").value;
+    const license = document.getElementById("license").value;
+    const phone = document.getElementById("phone").value;
+    const visitor = document.getElementById("visitor").value;
+    const visitDate = document.getElementById("visitDate").value;
+    const purpose = document.getElementById("purpose").value;
+    const notes = document.getElementById("notes").value;
+
+    if (shopName === "") return alert("يرجى إدخال اسم المحل.");
+
+    let data = JSON.parse(localStorage.getItem("shops") || "[]");
+
+    if (editIndex === -1 && data.some(item => item.shopName === shopName)) {
+      return alert("اسم المحل مكرر!");
+    }
+
+    const entry = {
+      shopName,
+      sectorType,
+      activityName,
+      location,
+      license,
+      phone,
+      visitor,
+      visitDate,
+      purpose,
+      notes
+    };
+
+    if (editIndex === -1) {
+      data.push(entry);
+    } else {
+      data[editIndex] = entry;
+      editIndex = -1;
+      document.getElementById("submitBtn").textContent = "إضافة";
+    }
+
+    localStorage.setItem("shops", JSON.stringify(data));
+    this.reset();
+    showData();
+    alert("تمت إضافة البيانات بنجاح");
+  });
+
+  function showData() {
+    const tbody = document.querySelector("#dataTable tbody");
+    tbody.innerHTML = "";
+    const data = JSON.parse(localStorage.getItem("shops") || "[]");
+
+    data.forEach((item, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.shopName}</td>
+        <td>${item.sectorType}</td>
+        <td>${item.activityName}</td>
+        <td>${item.location}</td>
+        <td>${item.license}</td>
+        <td>${item.phone}</td>
+        <td>${item.visitor}</td>
+        <td>${item.visitDate}</td>
+        <td>${item.purpose}</td>
+        <td>${item.notes}</td>
+        <td><button class="edit-btn" onclick="editData(${i})">تعديل</button></td>
+        <td><button class="delete-btn" onclick="deleteData(${i})">حذف</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function deleteData(index) {
+    let data = JSON.parse(localStorage.getItem("shops") || "[]");
+    if (confirm("هل أنت متأكد من حذف هذا السجل؟")) {
+      data.splice(index, 1);
+      localStorage.setItem("shops", JSON.stringify(data));
+      showData();
+    }
+  }
+
+  function editData(index) {
+    let data = JSON.parse(localStorage.getItem("shops") || "[]");
+    const item = data[index];
+    document.getElementById("shopName").value = item.shopName;
+    document.getElementById("sectorType").value = item.sectorType;
+    document.getElementById("activityName").value = item.activityName;
+    document.getElementById("location").value = item.location;
+    document.getElementById("license").value = item.license;
+    document.getElementById("phone").value = item.phone;
+    document.getElementById("visitor").value = item.visitor;
+    document.getElementById("visitDate").value = item.visitDate;
+    document.getElementById("purpose").value = item.purpose;
+    document.getElementById("notes").value = item.notes;
+    editIndex = index;
+    document.getElementById("submitBtn").textContent = "تحديث";
+  }
+
+  function exportToExcel() {
+  let data = JSON.parse(localStorage.getItem("shops") || "[]");
+
+  const arabicHeaders = [
+    "اسم المحل", "نوع القطاع", "اسم النشاط", "موقع المحل",
+    "رقم السجل التجاري", "رقم الهاتف", "اسم القائم بالزيارة",
+    "تاريخ الزيارة", "الهدف من الزيارة", "ملاحظات"
+  ];
+
+  const formattedData = data.map(item => ({
+    "اسم المحل": item.shopName,
+    "نوع القطاع": item.sectorType,
+    "اسم النشاط": item.activityName,
+    "موقع المحل": item.location,
+    "رقم السجل التجاري": item.license,
+    "رقم الهاتف": item.phone,
+    "اسم القائم بالزيارة": item.visitor,
+    "تاريخ الزيارة": item.visitDate,
+    "الهدف من الزيارة": item.purpose,
+    "ملاحظات": item.notes
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(formattedData, { header: arabicHeaders });
+
+  // ✅ تفعيل دعم اتجاه من اليمين لليسار
+  ws['!rtl'] = true;
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "المحلات");
+  XLSX.writeFile(wb, "المحلات.xlsx");
+}
+
+
+  // إنشاء مصنف جديد وتطبيق خصائص خاصة بـ RTL
+  const wb = XLSX.utils.book_new();
+
+  // ملاحظة: مكتبة XLSX لا تدعم خصائص RTL كاملة لكن محاذاة النص تكفي
+
+  XLSX.utils.book_append_sheet(wb, ws, "بيانات");
+
+  XLSX.writeFile(wb, "shops_data.xlsx");
+
+
+async function exportToPDF() {
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF('p', 'pt', 'a4');
+const dataTable = document.getElementById("dataTable");
+
+await html2canvas(dataTable).then(canvas => {
+  const imgData = canvas.toDataURL('image/png');
+  const imgProps = doc.getImageProperties(imgData);
+  const pdfWidth = doc.internal.pageSize.getWidth() - 40;
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  doc.addImage(imgData, 'PNG', 20, 20, pdfWidth, pdfHeight);
+});
+
+doc.save("shops_data.pdf");
+}
+
+function downloadJSON() {
+const data = localStorage.getItem("shops");
+if (!data) return alert("لا توجد بيانات للتحميل.");
+const blob = new Blob([data], { type: "application/json" });
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+a.href = url;
+a.download = "shops_data.json";
+a.click();
+URL.revokeObjectURL(url);
+}
+
+function uploadJSON() {
+document.getElementById("jsonFile").click();
+}
+
+function handleJSONUpload(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function (e) {
+try {
+const json = JSON.parse(e.target.result);
+if (!Array.isArray(json)) throw "الملف غير صالح.";
+localStorage.setItem("shops", JSON.stringify(json));
+showData();
+alert("تم رفع البيانات بنجاح");
+} catch (err) {
+alert("فشل في قراءة الملف: " + err);
+}
+};
+reader.readAsText(file);
+}
+function shareViaOutlook() {
+  const subject = "مشاركة بيانات المحلات التجارية";
+  const body = "يرجى مراجعة بيانات المحلات التجارية المرفقة.";
+
+  const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
+}
+if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+</script>
+
+</body>
+ </html> 

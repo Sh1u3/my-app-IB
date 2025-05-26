@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تفتيش المحلات التجارية – هيئة حماية المستهلك</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom, #E0F7FA, #B3E5FC);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .info-section {
+      flex: 1;
+      background-color: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .info-section img {
+      max-width: 80%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .info-section h2 {
+      font-size: 1.8rem;
+      color: #004d40;
+      text-shadow: 1px 1px 4px rgba(0, 77, 64, 0.6);
+      margin-bottom: 1rem;
+    }
+    .info-section p {
+      font-size: 0.95rem;
+      color: #003366;
+      line-height: 1.7;
+    }
+    .login-box {
+      flex: 1;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .login-box h2 {
+      margin-bottom: 1rem;
+      color: #007BFF;
+      text-align: center;
+    }
+    .logo {
+      width: 200px;
+      margin: 0 auto 1rem;
+      display: block;
+    }
+    .login-box form {
+      display: flex;
+      flex-direction: column;
+    }
+    .login-box input {
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .login-box button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .login-box button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-section">
+      <h2>برنامج تفتيش المحلات التجارية</h2>
+      <img src="p1.jpg" alt="صورة جانبية" />
+      <p>
+        يلعب المفتشون دورًا حيويًا في الحفاظ على نزاهة الأسواق وحماية صحة المستهلكين من التلاعب والغش.
+        يهدف هذا البرنامج إلى دعم جهود المفتشين من خلال توفير أداة مهنية وفعّالة لمتابعة المحلات
+        التجارية، وتوثيق نتائج التفتيش، وتحليل المخالفات. يساهم البرنامج في تعزيز الرقابة وضمان تطبيق
+        الأنظمة والقوانين بما يساهم في بيئة تجارية صحية وآمنة للمستهلكين.
+      </p>
+    </div>
+    <div class="login-box">
+      <img src="logo.png" alt="شعار الهيئة" class="logo" />
+      <h2>تسجيل الدخول</h2>
+      <form onsubmit="event.preventDefault(); login();">
+        <input type="text" id="jobNumber" placeholder="الرقم الوظيفي" required />
+        <button type="submit">دخول</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      const jobNumber = document.getElementById("jobNumber").value.trim();
+      if (jobNumber === "") {
+        alert("يرجى إدخال الرقم الوظيفي.");
+        return;
+      }
+      localStorage.setItem("jobNumber", jobNumber);
+      window.location.href = "inspector.html";
+    }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+  </script>
+</body>
+</html>
